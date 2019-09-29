@@ -17,9 +17,16 @@ public class BlockFlow extends JavaPlugin {
 	private FlatFileDB db;
 	private WorldEditPlugin worldedit;
 	
+	private BlockFlowCommand command;
+	
 	@Override
 	public void onEnable() {
 		worldedit = ( WorldEditPlugin ) Bukkit.getPluginManager().getPlugin( "WorldEdit" );
+		
+		command = new BlockFlowCommand( this );
+		
+		getCommand( "blockflow" ).setExecutor( command );
+		getCommand( "blockflow" ).setTabCompleter( command );
 	}
 
 	public Canvas getMainCanvas() {

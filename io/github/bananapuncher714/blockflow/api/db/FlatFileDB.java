@@ -7,8 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 public class FlatFileDB {
-	protected final Set< DataValue< ? > > values = new HashSet< DataValue< ? > >();
+	protected final Set< DBEntry > values = new HashSet< DBEntry >();
 	protected final Set< Category > categories;
+	
+	public FlatFileDB( Set< Category > categories ) {
+		this.categories = Collections.unmodifiableSet( categories );
+	}
 	
 	public FlatFileDB( Category[] categories ) {
 		this.categories = Collections.unmodifiableSet( new HashSet< Category >( Arrays.asList( categories ) ) );
@@ -18,28 +22,32 @@ public class FlatFileDB {
 		return categories;
 	}
 	
-	public void add( DataValue< ? > value ) {
+	public void add( DBEntry entry ) {
 		for ( Category cat : categories  ) {
-			if ( value.get( cat ) == null ) {
+			if ( !entry.contains( cat ) ) {
 				throw new IllegalArgumentException( "Value provided is missing the category " + cat );
 			}
 		}
-		values.add( value );
+		values.add( entry );
 	}
 	
-	public Set< DataValue< ? > > get( Map< Category, String > categories ) {
+	public Set< DBEntry > getEntries() {
+		return values;
+	}
+	
+	public Set< DBEntry > getEntries( Map< Category, CategoryComparator > categories ) {
 		for ( Category cat : categories.keySet() ) {
 			if ( !this.categories.contains( cat ) ) {
 				throw new IllegalArgumentException( "Database does not contain this category!" );
 			}
 		}
 		
-		Set< DataValue< ? > > matches = new HashSet< DataValue< ? > >();
-		for ( DataValue< ? > value : values ) {
+		Set< DBEntry > matches = new HashSet< DBEntry >();
+		for ( DBEntry value : values ) {
 			boolean valid = true;
 			for ( Category category : categories.keySet() ) {
-				String expected = categories.get( category );
-				if ( !value.get( category ).equals( expected ) ) {
+				CategoryComparator comparator = categories.get( category );
+				if ( !comparator.compare( category, value ) ) {
 					valid = false;
 					break;
 				}
@@ -50,5 +58,9 @@ public class FlatFileDB {
 		}
 		
 		return matches;
+	}
+	
+	public static interface CategoryComparator {
+		boolean compare( Category category, DBEntry value );
 	}
 }

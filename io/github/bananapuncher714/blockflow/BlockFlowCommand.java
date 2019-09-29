@@ -58,10 +58,12 @@ public class BlockFlowCommand implements CommandExecutor, TabCompleter {
 		Validate.isTrue( sender instanceof Player, ChatColor.RED + "Sender must be a player!" );
 		Player player = ( Player ) sender;
 		Canvas canvas = plugin.getSelection( player );
-		Validate.notNull( canvas, ChatColor.RED + "You must make a selection first!" );
+		Validate.isTrue( canvas != null, ChatColor.RED + "You must make a selection first!" );
 		
 		plugin.setMainCanvas( canvas );
 		canvas.clear();
+		
+		sender.sendMessage( "Canvas created!" );
 	}
 	
 	private final String[] pop( String[] array ) {
