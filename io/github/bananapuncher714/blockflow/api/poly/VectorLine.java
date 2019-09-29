@@ -30,8 +30,6 @@ public class VectorLine {
 	public boolean intersects( VectorLine other ) {
 		Vector line = max.clone().subtract( min );
 		
-		
-		
 		return false;
 	}
 }

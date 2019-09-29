@@ -2,10 +2,10 @@ package io.github.bananapuncher714.blockflow.api.db;
 
 import io.github.bananapuncher714.blockflow.api.db.FlatFileDB.CategoryComparator;
 
-public class StringCategoryComparator implements CategoryComparator {
+public class CategoryComparatorString implements CategoryComparator {
 	protected String str;
 	
-	public StringCategoryComparator( String str ) {
+	public CategoryComparatorString( String str ) {
 		this.str = str;
 	}
 	

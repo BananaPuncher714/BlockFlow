@@ -10,6 +10,9 @@ public class DBEntry {
 	}
 	
 	public void set( Category category, String object ) {
+		if ( object == null ) {
+			throw new IllegalArgumentException( "Object cannot be null!" );
+		}
 		objects.put( category, object );
 	}
 	

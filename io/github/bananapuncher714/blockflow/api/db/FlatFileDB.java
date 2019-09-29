@@ -14,7 +14,7 @@ public class FlatFileDB {
 		this.categories = Collections.unmodifiableSet( categories );
 	}
 	
-	public FlatFileDB( Category[] categories ) {
+	public FlatFileDB( Category... categories ) {
 		this.categories = Collections.unmodifiableSet( new HashSet< Category >( Arrays.asList( categories ) ) );
 	}
 	
