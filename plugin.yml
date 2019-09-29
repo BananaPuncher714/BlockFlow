@@ -3,8 +3,6 @@ main: io.github.bananapuncher714.blockflow.BlockFlow
 version: 0.1
 author: BananaPuncher714
 api-version: 1.13
-depend:
-- "WorldEdit"
 description: Visualize data in 4d with Minecraft
 commands:
     blockflow:

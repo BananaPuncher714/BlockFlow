@@ -1,18 +1,18 @@
 package io.github.bananapuncher714.blockflow.api.canvas;
 
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import io.github.bananapuncher714.blockflow.BlockFlow;
@@ -22,15 +22,19 @@ import io.github.bananapuncher714.blockflow.api.poly.VectorLine;
 import io.github.bananapuncher714.blockflow.file.PolyUtil;
 
 public class WorldSubcanvas extends Subcanvas {
+	protected Map< String, FlatPoly > polyMapper = new HashMap< String, FlatPoly >();
 	protected Map< FlatPoly, Set< Location > > polys = new HashMap< FlatPoly, Set< Location > >();
 	protected Map< Location, Material > locations = new HashMap< Location, Material >();
 	protected Vector size = new Vector( 0, 0, 0 );
+	protected BukkitTask task;
 	
-	public WorldSubcanvas( Collection< FlatPoly > polys, Vector size ) {
+	public WorldSubcanvas( Map< String, FlatPoly > polys, Vector size ) {
 		super( size );
-		for ( FlatPoly poly : polys ) {
+		for ( String name : polys.keySet() ) {
+			FlatPoly poly = polys.get( name );
 			FlatPoly rescaled = poly.getScaled( .15 );
 			this.polys.put( rescaled, new HashSet< Location >() );
+			polyMapper.put( name, rescaled );
 			
 			for ( VectorLine line : rescaled.getLines() ) {
 				this.size.setX( Math.max( this.size.getX(), Math.max( line.getMax().getX(), line.getMin().getX() ) ) );
@@ -47,6 +51,11 @@ public class WorldSubcanvas extends Subcanvas {
 			}
 			Location location = locations.keySet().iterator().next();
 			Material mat = locations.remove( location );
+			Block block = location.getBlock();
+			if ( block.getType() == mat ) {
+				i--;
+				continue;
+			}
 			location.getBlock().setType( mat, false );
 		}
 	}
@@ -78,11 +87,18 @@ public class WorldSubcanvas extends Subcanvas {
 				}
 			}
 		}
-		Bukkit.getScheduler().runTaskTimer( JavaPlugin.getPlugin( BlockFlow.class ), this::tick, 0, 4 );
+		task = Bukkit.getScheduler().runTaskTimer( JavaPlugin.getPlugin( BlockFlow.class ), this::tick, 0, 4 );
 	}
 
 	public void disable() {
+		if ( task != null ) {
+			task.cancel();
+		}
 		locations.clear();
+	}
+	
+	public Set< Location > getPolyLocs( String id ) {
+		return polys.get( polyMapper.get( id ) );
 	}
 	
 	public final static Location getBlockLocation( Location loc ) {

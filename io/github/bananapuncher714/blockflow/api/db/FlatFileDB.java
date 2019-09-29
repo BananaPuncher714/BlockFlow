@@ -35,10 +35,18 @@ public class FlatFileDB {
 		return values;
 	}
 	
+	public Set< String > getValuesFor( Category category ) {
+		Set< String > vals = new HashSet< String >();
+		for ( DBEntry entry : values ) {
+			vals.add( entry.get( category ) );
+		}
+		return vals;
+	}
+	
 	public Set< DBEntry > getEntries( Map< Category, CategoryComparator > categories ) {
 		for ( Category cat : categories.keySet() ) {
 			if ( !this.categories.contains( cat ) ) {
-				throw new IllegalArgumentException( "Database does not contain this category!" );
+				throw new IllegalArgumentException( "Database does not contain this category! " + cat.getIdentifier() );
 			}
 		}
 		
