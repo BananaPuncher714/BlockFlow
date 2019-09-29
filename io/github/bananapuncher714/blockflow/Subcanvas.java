@@ -1,5 +1,6 @@
 package io.github.bananapuncher714.blockflow;
 
+import org.bukkit.World;
 import org.bukkit.util.Vector;
 
 public abstract class Subcanvas {
@@ -17,5 +18,6 @@ public abstract class Subcanvas {
 		this.size = size.clone();
 	}
 
-	public abstract void fill( Vector leastCorner );
+	public abstract void fill( World world, Vector leastCorner );
+	public abstract void disable();
 }

@@ -1,5 +1,8 @@
 package io.github.bananapuncher714.blockflow;
 
+import java.io.File;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,6 +14,10 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Region;
 
 import io.github.bananapuncher714.blockflow.api.db.FlatFileDB;
+import io.github.bananapuncher714.blockflow.api.poly.FlatPoly;
+import io.github.bananapuncher714.blockflow.file.CSVReader;
+import io.github.bananapuncher714.blockflow.file.PolyUtil;
+import io.github.bananapuncher714.blockflow.util.FileUtil;
 
 public class BlockFlow extends JavaPlugin {
 	private Canvas mainCanvas;
@@ -19,8 +26,22 @@ public class BlockFlow extends JavaPlugin {
 	
 	private BlockFlowCommand command;
 	
+	private Map< String, FlatPoly > polys;
+	
+	private File CSV_FILE;
+	private File POLY_FILE;
+	
+	
+	
 	@Override
 	public void onEnable() {
+		CSV_FILE = new File( getDataFolder() + "/" + "uberdb.csv" );
+		POLY_FILE = new File( getDataFolder() + "/" + "poly.dat" );
+		
+		init();
+		
+		load();
+		
 		worldedit = ( WorldEditPlugin ) Bukkit.getPluginManager().getPlugin( "WorldEdit" );
 		
 		command = new BlockFlowCommand( this );
@@ -28,12 +49,34 @@ public class BlockFlow extends JavaPlugin {
 		getCommand( "blockflow" ).setExecutor( command );
 		getCommand( "blockflow" ).setTabCompleter( command );
 	}
+	
+	@Override
+	public void onDisable() {
+		if ( mainCanvas != null ) {
+			mainCanvas.disable();
+		}
+	}
+	
+	private void init() {
+		FileUtil.saveToFile( getResource( "data/uberdb.csv" ), CSV_FILE, false );
+		FileUtil.saveToFile( getResource( "data/poly.dat" ), POLY_FILE, false );
+	}
 
+	private void load() {
+		 db = CSVReader.read( CSV_FILE );
+		 getLogger().info( "Uber DB Loaded!" );
+		 polys = PolyUtil.load( POLY_FILE );
+		 getLogger().info( "Polys loaded!" );
+	}
+	
 	public Canvas getMainCanvas() {
 		return mainCanvas;
 	}
 
 	public void setMainCanvas( Canvas mainCanvas ) {
+		if ( mainCanvas != null  ) {
+			mainCanvas.disable();
+		}
 		this.mainCanvas = mainCanvas;
 	}
 	
@@ -60,5 +103,13 @@ public class BlockFlow extends JavaPlugin {
 		} catch ( IncompleteRegionException e ) {
 			return null;
 		}
+	}
+
+	public FlatFileDB getDb() {
+		return db;
+	}
+
+	public Map< String, FlatPoly > getPolys() {
+		return polys;
 	}
 }

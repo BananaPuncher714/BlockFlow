@@ -12,6 +12,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.bukkit.util.Vector;
+
+import io.github.bananapuncher714.blockflow.api.canvas.WorldSubcanvas;
 
 public class BlockFlowCommand implements CommandExecutor, TabCompleter {
 	protected BlockFlow plugin;
@@ -42,6 +45,8 @@ public class BlockFlowCommand implements CommandExecutor, TabCompleter {
 				args = pop( args );
 				if ( option.equalsIgnoreCase( "create" ) ) {
 					create( sender, args );
+				} else if ( option.equalsIgnoreCase( "update" ) ) {
+					update( sender, args );
 				}
 			}
 		} catch ( IllegalArgumentException exception ) {
@@ -63,7 +68,23 @@ public class BlockFlowCommand implements CommandExecutor, TabCompleter {
 		plugin.setMainCanvas( canvas );
 		canvas.clear();
 		
-		sender.sendMessage( "Canvas created!" );
+		Vector bottom = canvas.getMost().clone().subtract( canvas.getLeast() );
+		bottom.setY( 1 );
+		
+		canvas.registerSubcanvas( new WorldSubcanvas( plugin.getPolys().values(), bottom ), canvas.getLeast() );
+		
+		canvas.forceUpdate();
+		
+		sender.sendMessage( ChatColor.GREEN + "Canvas created!" );
+	}
+	
+	private void update( CommandSender sender, String[] args ) {
+		Canvas canvas = plugin.getMainCanvas();
+		Validate.isTrue( canvas != null, ChatColor.RED + "A canvas has not been created yet!" );
+		
+		canvas.forceUpdate();
+		
+		sender.sendMessage( ChatColor.GREEN + "Canvas updated!" );
 	}
 	
 	private final String[] pop( String[] array ) {

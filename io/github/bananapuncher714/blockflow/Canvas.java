@@ -58,7 +58,7 @@ public class Canvas {
 			Subcanvas canvas = entry.getKey();
 			Vector minPos = entry.getValue();
 			
-			canvas.fill( minPos );
+			canvas.fill( world, minPos );
 		}
 	}
 	
@@ -66,9 +66,15 @@ public class Canvas {
 		for ( int x = least.getBlockX(); x <= most.getBlockX(); x++ ) {
 			for ( int y = least.getBlockY(); y <= most.getBlockY(); y++ ) {
 				for ( int z = least.getBlockZ(); z <= most.getBlockZ(); z++ ) {
-					world.getBlockAt( x, y, z ).setType( Material.AIR, false );
+//					world.getBlockAt( x, y, z ).setType( Material.AIR, false );
 				}
 			}
+		}
+	}
+	
+	public void disable() {
+		for ( Subcanvas subcanvas : subcanvases.keySet() ) {
+			subcanvas.disable();
 		}
 	}
 }

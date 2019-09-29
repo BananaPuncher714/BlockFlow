@@ -32,4 +32,8 @@ public class VectorLine {
 		
 		return false;
 	}
+	
+	public VectorLine getScaled( double scale ) {
+		return new VectorLine( min.clone().multiply( scale ), max.clone().multiply( scale ) );
+	}
 }

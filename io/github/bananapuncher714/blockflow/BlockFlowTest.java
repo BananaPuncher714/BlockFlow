@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import io.github.bananapuncher714.blockflow.api.db.Category;
 import io.github.bananapuncher714.blockflow.api.db.CategoryComparatorString;
 import io.github.bananapuncher714.blockflow.api.db.DBEntry;
@@ -31,14 +33,14 @@ public class BlockFlowTest {
 		File polyFile = new File( baseDir + "/data/" + "test-poly.dat" );
 		PolyUtil.save( polyMap, polyFile );
 		
-//		ArrayList< FlatPoly > polyList = new ArrayList< FlatPoly >( polyMap.values() );
+		ArrayList< FlatPoly > polyList = new ArrayList< FlatPoly >( polyMap.values() );
 		
-//		SwingUtilities.invokeLater( new Runnable() {
-//			@Override
-//			public void run() {
-//				new WorldPanel( polyList );
-//			}
-//		} );
+		SwingUtilities.invokeLater( new Runnable() {
+			@Override
+			public void run() {
+				new WorldPanel( polyList );
+			}
+		} );
 	}
 	
 	private static void print( FlatFileDB db ) {

@@ -43,4 +43,12 @@ public class FlatPoly {
 	public boolean inside( Vector point ) {
 		return false;
 	}
+	
+	public FlatPoly getScaled( double scale ) {
+		FlatPoly newPoly = new FlatPoly();
+		for ( VectorLine line : lines ) {
+			newPoly.add( line.getScaled( scale ) );
+		}
+		return newPoly;
+	}
 }

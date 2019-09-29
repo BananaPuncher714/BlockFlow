@@ -13,7 +13,7 @@ public abstract class PaintPanel extends JPanel {
 	
 	private Graphics g;
 	
-	private double scale = .5;
+	private double scale = .75;
 	
 	@Override
 	public void paintComponent( Graphics g ) {

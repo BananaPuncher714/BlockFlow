@@ -77,6 +77,18 @@ public class PolyUtil {
 		} catch ( Exception exception ) {
 			exception.printStackTrace();
 		}
-
+	}
+	
+	public static boolean contains( FlatPoly poly, Vector point ) {
+		boolean result = false;
+		for ( VectorLine line : poly.getLines() ) {
+			Vector min = line.getMin();
+			Vector max = line.getMax();
+			if ( ( min.getX() > point.getX() != max.getX() > point.getX() ) &&
+					( point.getZ() < ( max.getZ() - min.getZ() ) * ( point.getX() - min.getX() ) / ( max.getX() - min.getX() ) + min.getZ() ) ) {
+				result =! result;
+			}
+		}
+		return result;
 	}
 }
