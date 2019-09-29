@@ -31,14 +31,14 @@ public class CSVReader {
 					headers = new Category[ contents.length ];
 					for ( int i = 0; i < headers.length; i++ ) {
 						String header = contents[ i ];
-						Category newCategory = new Category( header );
+						Category newCategory = new Category( header.trim() );
 						headers[ i ] = newCategory;
 					}
 					db = new FlatFileDB( headers );
 				} else {
 					DBEntry entry = new DBEntry();
 					for ( int i = 0; i < headers.length; i++ ) {
-						entry.set( headers[ i ], contents[ i ] );
+						entry.set( headers[ i ], contents[ i ].trim() );
 					}
 					db.add( entry );
 				}
